@@ -78,7 +78,8 @@ int main(int argc, char** argv) {
 
 
 
-
+  std::cout<<"park.cc"<<std::endl;
+  std::cout<<"traj_config_path"<<traj_config_path<<std::endl;
   
   double desired_vel;
   nh.param("desired_vel", desired_vel, 6.0);

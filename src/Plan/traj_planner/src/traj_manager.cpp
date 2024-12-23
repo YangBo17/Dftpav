@@ -8,6 +8,54 @@
 #include <fstream>
 namespace plan_manage
 {
+  void printContainers(const std::vector<std::vector<Eigen::MatrixXd>>& sfc_container,
+                     const std::vector<int>& singul_container,
+                     const Eigen::VectorXd& duration_container,
+                     const std::vector<Eigen::MatrixXd>& waypoints_container,
+                     const std::vector<Eigen::MatrixXd>& iniState_container,
+                     const std::vector<Eigen::MatrixXd>& finState_container) {
+
+    // 打印 sfc_container
+    std::cout << "sfc_container:" << std::endl;
+    for (size_t i = 0; i < sfc_container.size(); ++i) {
+        std::cout << "  Segment " << i << ":" << std::endl;
+        for (size_t j = 0; j < sfc_container[i].size(); ++j) {
+            std::cout << "    Matrix " << j << ": " << std::endl;
+            std::cout << sfc_container[i][j] << std::endl;
+        }
+    }
+
+    // 打印 singul_container
+    std::cout << "singul_container:" << std::endl;
+    for (size_t i = 0; i < singul_container.size(); ++i) {
+        std::cout << "  Index " << i << ": " << singul_container[i] << std::endl;
+    }
+
+    // 打印 duration_container
+    std::cout << "duration_container:" << std::endl;
+    std::cout << duration_container.transpose() << std::endl;
+
+    // 打印 waypoints_container
+    std::cout << "waypoints_container:" << std::endl;
+    for (size_t i = 0; i < waypoints_container.size(); ++i) {
+        std::cout << "  Waypoint " << i << ": " << std::endl;
+        std::cout << waypoints_container[i] << std::endl;
+    }
+
+    // 打印 iniState_container
+    std::cout << "iniState_container:" << std::endl;
+    for (size_t i = 0; i < iniState_container.size(); ++i) {
+        std::cout << "  Initial State " << i << ": " << std::endl;
+        std::cout << iniState_container[i] << std::endl;
+    }
+
+    // 打印 finState_container
+    std::cout << "finState_container:" << std::endl;
+    for (size_t i = 0; i < finState_container.size(); ++i) {
+        std::cout << "  Final State " << i << ": " << std::endl;
+        std::cout << finState_container[i] << std::endl;
+    }
+}
 
   ErrorType TrajPlanner::Init(const std::string config_path) {
     ReadConfig(config_path);
@@ -603,12 +651,17 @@ namespace plan_manage
     std::cout<<"convert time: "<<(t2-t1)<<std::endl;
     ploy_traj_opt_->setSurroundTrajs(&surround_trajs);
     // ploy_traj_opt_->setSurroundTrajs(NULL);
+    double t3 = ros::Time::now().toSec();
     std::cout<<"try to optimize!\n";
-    
+
     int flag_success = ploy_traj_opt_->OptimizeTrajectory(iniState_container, finState_container, 
                                                         waypoints_container,duration_container, 
                                                         sfc_container,  singul_container,worldtime,0.0);
     std::cout<<"optimize ended!\n";
+    double t4 = ros::Time::now().toSec();
+    std::cout<<"optimize time: "<<(t4-t3)<<std::endl;
+    // std::cout<<"singul_container"<<singul_container;
+    printContainers(sfc_container, singul_container, duration_container, waypoints_container, iniState_container, finState_container);
    
 
 
